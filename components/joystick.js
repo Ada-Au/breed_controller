@@ -18,7 +18,8 @@ function Joystick({ padRadius = 64, thumbRadius = 30, handleChange }) {
   const pan = useRef(new Animated.ValueXY(center)).current;
   const panResponder = useRef(
     PanResponder.create({
-      onMoveShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponderCapture: () => true,
+      onStartShouldSetResponder: () => true,
       onPanResponderGrant: () => {
         pan.flattenOffset();
         pan.setOffset({
@@ -56,7 +57,6 @@ function Joystick({ padRadius = 64, thumbRadius = 30, handleChange }) {
       },
     })
   ).current;
-
   return (
     <View
       style={[
@@ -80,20 +80,17 @@ function Joystick({ padRadius = 64, thumbRadius = 30, handleChange }) {
         ]}
       />
       <Animated.View
-        style={{
-          transform: [{ translateX: pan.x }, { translateY: pan.y }],
-        }}
-        {...panResponder.panHandlers}
-      >
-        <View
-          style={{
-            aspectRatio: 1,
-            position: "absolute",
+        style={[
+          styles.thumb,
+          {
+            backgroundColor: "rgba(0,0,0,0.5)",
+            transform: [{ translateX: pan.x }, { translateY: pan.y }],
             width: thumbRadius * 2,
             borderRadius: thumbRadius,
-          }}
-        />
-      </Animated.View>
+          },
+        ]}
+        {...panResponder.panHandlers}
+      ></Animated.View>
     </View>
   );
 }
